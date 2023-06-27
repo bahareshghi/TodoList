@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="style.css">
+        <title>Todo List</title>
+    </head>
+
+    <body>
+        <header class="header">
+            <h1 class="header__title">Todo List <span class="todos-number">4</span></h1>
+            <section class="header__footer">
+                <div class="select">
+                    <select name="filter-todos" class="filter-todos">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="uncompeleted">UnCompeleted</option>
+                    </select>
+                </div>
+                <div class="search-container">
+                    <input type="text" class="search-container__input" placeholder="Todo title...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="select">
+                    <select name="sort-todos" class="sort-todos">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                    </select>
+                </div>
+            </section>
+        </header>
+        <main class="container">
+            <ul class="container__todos"></ul>
+            <div class="container__add-todo">
+                <button class="add-todo__btn">
+                    <i class="fa-solid fa-plus-circle"></i>
+                </button>
+                <input type="text" placeholder="Add new todo" class="add-todo__input" />
+            </div>
+        </main>
+
+        <script src="index.js"></script>
+    </body>
+
+</html>
