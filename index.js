@@ -54,9 +54,9 @@ function createTodos ( todos )
     todoContainer.classList.add('todo');
     todoContainer.innerHTML = `<p contenteditable="true" class="todo__title ${
       todo.completed && 'completed'
-    }" type="text" value=${todo.title} data-id ='${
+    }" data-id ='${
       todo.id
-    }'>${todo.title}</p><span class="todo__actions">    <i class="fa-regular ${
+    }'>${todo.title}</p><span class="todo__actions"><i class="fa-regular ${
       todo.completed ? 'fa-square-check' : 'fa-square'
     }" data-id ='${
       todo.id
@@ -111,7 +111,7 @@ function todoActions(item) {
     // Update DOM
     createTodos(filteredTodos);
   } else if (type.contains('todo__title')) {
-    changedTodo.title = item.value;
+    changedTodo.title = item.textContent;
     // Update LocalStorage
     saveTodos(todos);
   }
