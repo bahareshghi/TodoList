@@ -1,10 +1,31 @@
 const addTodoBtn = document.querySelector('.add-todo__btn');
 const addTodoInput = document.querySelector('.add-todo__input');
 const todosContainer = document.querySelector('.container__todos');
+const sortTodosContainer = document.querySelector('.sort-todos');
+const filterTodosContainer = document.querySelector('.filter-todos');
+const searchTodosContainer = document.querySelector('.search-container__input');
+const todosNumber = document.querySelector('.todos-number');
 
 addTodoBtn.addEventListener('click', addTodo);
+addTodoInput.addEventListener('keyup', (e) => {
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    addTodo();
+  }
+});
+sortTodosContainer.addEventListener('change', (e) => sortTodos(e.target));
+filterTodosContainer.addEventListener('change', (e) => filterTodos(e.target));
+searchTodosContainer.addEventListener('input', (e) => searchTodos(e.target));
+
 document.addEventListener('DOMContentLoaded', createTodos(getTodos()));
-// -------------------------------------------------Add New Todo------------------------------------------------- //
+document.addEventListener('DOMContentLoaded', () => {
+  filterTodosContainer.value = 'all';
+  sortTodosContainer.value = 'oldest';
+  searchTodosContainer.value = '';
+  todosNumber.textContent = getTodos().length;
+});
+
+// -------------------------------------------------Add Todo------------------------------------------------- //
 function addTodo() {
   const todoTitle = addTodoInput.value;
   const id = new Date().getTime();
@@ -22,11 +43,12 @@ function addTodo() {
   saveTodos(todos);
   // Create Todos
   createTodos(todos);
-  // Reset
+  // Update DOM
   addTodoInput.value = '';
+  sortTodos(sortTodosContainer);
 }
 
-// -------------------------------------------------Create todos------------------------------------------------- //
+// -------------------------------------------------Create Todos------------------------------------------------- //
 function createTodos(todos) {
   todosContainer.innerHTML = '';
   todos.forEach((todo) => {
@@ -49,6 +71,7 @@ function createTodos(todos) {
                 </span>
    `;
     }
+    // Update DOM
     todosContainer.append(todoContainer);
   });
 
@@ -60,11 +83,15 @@ function createTodos(todos) {
   todosTitle.forEach((title) => {
     title.addEventListener('input', (e) => todoActions(e.target));
   });
+
+  // Update DOM
+  todosNumber.textContent = getTodos().length;
 }
 
+// -------------------------------------------------Add Actions To Todos------------------------------------------------- //
 function todoActions(item) {
   const type = item.classList;
-  let todos = getTodos();
+  const todos = getTodos();
   const changedTodo = todos.find((todo) => todo.id == item.dataset.id);
 
   if (type.contains('fa-square')) {
@@ -87,12 +114,57 @@ function todoActions(item) {
     createTodos(filteredTodos);
   } else if (type.contains('todo__title')) {
     changedTodo.title = item.value;
-    console.log(item.value);
     // Update LocalStorage
     saveTodos(todos);
   }
 }
 
+// -------------------------------------------------Search,Sort,Filter Todos------------------------------------------------- //
+function sortTodos(e) {
+  const todos = getTodos();
+  const sortedTodos = todos.sort((a, b) => {
+    if (e.value === 'oldest') {
+      return a.id - b.id;
+    } else {
+      return b.id - a.id;
+    }
+  });
+  // Update DOM
+  createTodos(sortedTodos);
+  filterTodosContainer.value = 'all';
+  searchTodosContainer.value = '';
+}
+
+function filterTodos(e) {
+  const todos = getTodos();
+  console.log(e.value);
+  if (e.value === 'all') {
+    // Update DOM
+    createTodos(todos);
+  } else if (e.value === 'completed') {
+    const filteredTodos = todos.filter((todo) => todo.completed === true);
+    // Update DOM
+    createTodos(filteredTodos);
+  } else {
+    const filteredTodos = todos.filter((todo) => todo.completed === false);
+    // Update DOM
+    createTodos(filteredTodos);
+  }
+  sortTodosContainer.value = 'oldest';
+  searchTodosContainer.value = '';
+}
+
+function searchTodos(e) {
+  const todos = getTodos();
+  const searchedTodos = todos.filter((todo) =>
+    todo.title.toLowerCase().includes(e.value.toLowerCase())
+  );
+  // Update DOM
+  createTodos(searchedTodos);
+  filterTodosContainer.value = 'all';
+  sortTodosContainer.value = 'oldest';
+}
+// -------------------------------------------------Get,Save Todos From LocalStorage------------------------------------------------- //
 function saveTodos(todosToSave) {
   localStorage.setItem('todos', JSON.stringify(todosToSave));
 }
