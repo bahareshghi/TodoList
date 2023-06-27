@@ -1,18 +1,12 @@
-const addTodoBtn = document.querySelector('.add-todo__btn');
 const addTodoInput = document.querySelector('.add-todo__input');
 const todosContainer = document.querySelector('.container__todos');
 const sortTodosContainer = document.querySelector('.sort-todos');
 const filterTodosContainer = document.querySelector('.filter-todos');
 const searchTodosContainer = document.querySelector('.search-container__input');
 const todosNumber = document.querySelector('.todos-number');
+const addTodoContainer = document.querySelector('.container__add-todo');
 
-addTodoBtn.addEventListener('click', addTodo);
-addTodoInput.addEventListener('keyup', (e) => {
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    addTodo();
-  }
-});
+addTodoContainer.addEventListener('submit', addTodo);
 sortTodosContainer.addEventListener('change', (e) => sortTodos(e.target));
 filterTodosContainer.addEventListener('change', (e) => filterTodos(e.target));
 searchTodosContainer.addEventListener('input', (e) => searchTodos(e.target));
@@ -26,7 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // -------------------------------------------------Add Todo------------------------------------------------- //
-function addTodo() {
+function addTodo(e) {
+  e.preventDefault();
+  if (!addTodoInput.value) return null;
   const todoTitle = addTodoInput.value;
   const id = new Date().getTime();
 
@@ -41,37 +37,33 @@ function addTodo() {
     },
   ];
   saveTodos(todos);
-  // Create Todos
-  createTodos(todos);
+
   // Update DOM
+  createTodos(todos);
   addTodoInput.value = '';
   sortTodos(sortTodosContainer);
 }
 
 // -------------------------------------------------Create Todos------------------------------------------------- //
-function createTodos(todos) {
+function createTodos ( todos )
+{
   todosContainer.innerHTML = '';
   todos.forEach((todo) => {
+    if (!todo.title) return null;
     const todoContainer = document.createElement('li');
     todoContainer.classList.add('todo');
-    if (todo.completed === true) {
-      todoContainer.innerHTML = `
-                <input class="todo__title" type="text" value=${todo.title} data-id ='${todo.id}'></input>
-                <span class="todo__actions">
-                    <i class="fa-regular fa-square-check" data-id ='${todo.id}'></i>
-                    <i class="fa-solid fa-trash-can trash" data-id ='${todo.id}'></i>
-                </span>
-             `;
-    } else {
-      todoContainer.innerHTML = `
-                <input class="todo__title" type="text" value=${todo.title} data-id ='${todo.id}'></input>
-                <span class="todo__actions">
-                    <i class="fa-regular fa-square" data-id ='${todo.id}'></i>
-                    <i class="fa-solid fa-trash-can trash" data-id ='${todo.id}'></i>
-                </span>
-   `;
-    }
-    // Update DOM
+    todoContainer.innerHTML = `<p contenteditable="true" class="todo__title ${
+      todo.completed && 'completed'
+    }" type="text" value=${todo.title} data-id ='${
+      todo.id
+    }'>${todo.title}</p><span class="todo__actions">    <i class="fa-regular ${
+      todo.completed ? 'fa-square-check' : 'fa-square'
+    }" data-id ='${
+      todo.id
+    }'></i>    <i class="fa-solid fa-trash-can trash" data-id ='${
+      todo.id
+    }'></i></span>`;
+
     todosContainer.append(todoContainer);
   });
 
@@ -95,17 +87,23 @@ function todoActions(item) {
   const changedTodo = todos.find((todo) => todo.id == item.dataset.id);
 
   if (type.contains('fa-square')) {
+    // Update LocalStorage
+    changedTodo.completed = true;
+    saveTodos(todos);
+
+    // Update DOM
     item.classList.remove('fa-square');
     item.classList.add('fa-square-check');
-    changedTodo.completed = true;
-    // Update LocalStorage
-    saveTodos(todos);
+    item.parentElement.previousElementSibling.classList.add('completed');
   } else if (type.contains('fa-square-check')) {
+    // Update LocalStorage
+    changedTodo.completed = false;
+    saveTodos(todos);
+
+    // Update DOM
     item.classList.add('fa-square');
     item.classList.remove('fa-square-check');
-    changedTodo.completed = false;
-    // Update LocalStorage
-    saveTodos(todos);
+    item.parentElement.previousElementSibling.classList.remove('completed');
   } else if (type.contains('fa-trash-can')) {
     const filteredTodos = todos.filter((todo) => todo.id != changedTodo.id);
     // Update LocalStorage
@@ -137,19 +135,23 @@ function sortTodos(e) {
 
 function filterTodos(e) {
   const todos = getTodos();
-  console.log(e.value);
-  if (e.value === 'all') {
-    // Update DOM
-    createTodos(todos);
-  } else if (e.value === 'completed') {
-    const filteredTodos = todos.filter((todo) => todo.completed === true);
-    // Update DOM
-    createTodos(filteredTodos);
-  } else {
-    const filteredTodos = todos.filter((todo) => todo.completed === false);
-    // Update DOM
-    createTodos(filteredTodos);
+  switch (e.value) {
+    case 'all':
+      // Update DOM
+      createTodos(todos);
+      break;
+    case 'completed':
+      const completedTodos = todos.filter((todo) => todo.completed === true);
+      // Update DOM
+      createTodos(completedTodos);
+      break;
+    case 'uncompleted':
+      const uncompletedTodos = todos.filter((todo) => todo.completed === false);
+      // Update DOM
+      createTodos(uncompletedTodos);
+      break;
   }
+
   sortTodosContainer.value = 'oldest';
   searchTodosContainer.value = '';
 }

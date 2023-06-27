@@ -19,7 +19,7 @@
                     <select name="filter-todos" class="filter-todos">
                         <option value="all" selected="selected">All</option>
                         <option value="completed">Completed</option>
-                        <option value="uncompeleted">UnCompeleted</option>
+                        <option value="uncompleted">UnCompeleted</option>
                     </select>
                 </div>
                 <div class="search-container">
@@ -36,12 +36,12 @@
         </header>
         <main class="container">
             <ul class="container__todos"></ul>
-            <div class="container__add-todo">
+            <form class="container__add-todo">
                 <button class="add-todo__btn">
                     <i class="fa-solid fa-plus-circle"></i>
                 </button>
                 <input type="text" placeholder="Add new todo" class="add-todo__input" />
-            </div>
+            </form>
         </main>
 
         <script src="index.js"></script>

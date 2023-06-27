@@ -157,6 +157,7 @@ html {
     width: 50%;
     color: var(--primary-color);
     font-weight: 600;
+    font-size: 1.5rem;
     border-bottom: 1px solid #2564eb38;
 }
 
@@ -204,6 +205,11 @@ html {
 
 .add-todo__btn:hover {
     background-color: #2564ebb4;
+}
+
+.compeleted {
+    text-decoration: line-through;
+    color: #2564eb80;
 }
 
 /* -------------------------------------------------Media-Query------------------------------------------------- */
