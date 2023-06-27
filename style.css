@@ -33,7 +33,7 @@ html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0 3rem 3rem 3rem;
+    padding: 1rem 3rem 3rem 3rem;
 }
 
 .header__title {
